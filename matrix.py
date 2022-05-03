@@ -8,15 +8,15 @@ import sys #(sys.argv[x])
 # -   VARIABLES   -
 # -----------------
 
-rows = 19
+rows = 20
 columns = 95
 pieces = 6
 matrix = [["■" for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
 options = [0,"","","",0]
 colored = "\u001b[33m■\033[0m"
-segedpixel = [0,10]
+segedpixel = 0
 letterdb = open("letters.txt", "r")
-letterdata = [i.strip("\n") for i in letterdb] #letterdata[sor][oszlop]   # HOGY A FASZBA LEHET EZT 18 SOROKRA OSZTANI?
+letterdata = [i for i in letterdb] #letterdata[sor][oszlop]   # HOGY A FASZBA LEHET EZT 18 SOROKRA OSZTANI?
 
 # -------------
 # -  NUMBERS  -
@@ -29,21 +29,21 @@ def one():
 # -  LETTERS  -
 # -------------
 
-def A():
-    print("cica")
-
-#mostani
-#segédpixel a következőnek a helyes megjelenítése miatt kell
+#mostani MEGTARTVA AZ UTÓKORNAK, NE NYÚLJ HOZZÁ
 def V2():
     for i in range(len(letterdata)):
+        global segedpixel
         for j in range(len(letterdata[i])):
             if letterdata[i][j] == "1":
-                matrix[i][j] = colored
-            segedpixel[1] += 1
-        segedpixel[0] += 1
-    segedpixel[0] = 0
-    segedpixel[1] = len(letterdata[3]) + 1
-    print(segedpixel)
+                matrix[i][segedpixel+j] = colored
+    segedpixel = len(letterdata[0])
+
+#Bálint féle szerűség, természetesen nem működik, ~~mert szarul csináltam~~ mert miért is működne ez a szar...
+def V3():
+    for i in range(len(letterdata)):
+        for j in range(len(letterdata[0])):
+            matrix[i][j] = letterdata[i][j]
+        segedpixel = len(letterdata[0]) + 1
 
 #előző
 def V():
@@ -108,7 +108,7 @@ for i in range(len(sys.argv)):
 #        matrix[i][j] = colored
 
 V2()
-
+#V21()
 #print(matrix[1])
 for i in range(rows):
     for j in range(columns):
