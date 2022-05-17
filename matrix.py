@@ -1,29 +1,30 @@
-# -----------------
-# -   LIBRARIES   -
-# -----------------
+# ---------------
+# -  LIBRARIES  -
+# ---------------
 
 import sys #(sys.argv[x])
 
-# -----------------
-# -   VARIABLES   -
-# -----------------
+# ---------------
+# -  VARIABLES  -
+# ---------------
 
-rows = 20
+rows = 21
 columns = 95
 pieces = 6
-matrix = [["■" for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
-options = [0,"","","",0]
+matrix = [["\u001b[37m□\033[0m" for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
+options = [0,"","","","","",""]
 colored = "\u001b[33m■\033[0m"
-segedpixel = 0
-letterdb = open("letters.txt", "r")
-letterdata = [i for i in letterdb] #letterdata[sor][oszlop]   # HOGY A FASZBA LEHET EZT 18 SOROKRA OSZTANI?
+#colored = "■"
+segedpixel = 1
+letterdb = open("letters-1row.txt", "r").readlines()
+letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(letterdb)//rows)]
+letterdb2 = open("letters-2row.txt", "r").readlines()
 
-# -------------
-# -  NUMBERS  -
-# -------------
+letterdict = {}
 
-def one():
-    matrix
+for i in range(len(letterdb)//rows):
+    for j in range(rows):
+        letterdict[letterdata[i][0]] = letterdata[i]
 
 # -------------
 # -  LETTERS  -
@@ -38,48 +39,14 @@ def V2():
                 matrix[i][segedpixel+j] = colored
     segedpixel = len(letterdata[0])
 
-#Bálint féle szerűség, természetesen nem működik, ~~mert szarul csináltam~~ mert miért is működne ez a szar...
-def V3():
-    for i in range(len(letterdata)):
-        for j in range(len(letterdata[0])):
-            matrix[i][j] = letterdata[i][j]
-        segedpixel = len(letterdata[0]) + 1
-
-#előző
-def V():
-    print(segedpixel[0])
-    segedpixel[0] += segedpixel[0]+1
-    print(segedpixel[0])
-    matrix[2][2] = colored
-    matrix[3][2] = colored
-    matrix[2][3] = colored
-    matrix[3][3] = colored
-    for i in range(4, 8):
-        matrix[i][3] = colored
-        matrix[i][4] = colored
-    for i in range(8, 11):
-        matrix[i][4] = colored
-        matrix[i][5] = colored
-    for i in range(11, 15):
-        matrix[i][5] = colored
-        matrix[i][6] = colored
-    for i in range(15, 17):
-        matrix[i][6] = colored
-        matrix[i][7] = colored
-        matrix[i][8] = colored
-    for i in range(11, 15):
-        matrix[i][8] = colored
-        matrix[i][9] = colored
-    for i in range(8, 11):
-        matrix[i][9] = colored
-        matrix[i][10] = colored
-    for i in range(4, 8):
-        matrix[i][10] = colored
-        matrix[i][11] = colored
-    matrix[2][11] = colored
-    matrix[3][11] = colored
-    matrix[2][12] = colored
-    matrix[3][12] = colored
+#Bálint féle és természetesen működik
+def V4(x: int):
+    for i in range(len(letterdata[x])):
+        global segedpixel
+        for j in range(len(letterdata[x][i])):
+            if letterdata[x][i][j] == "1":
+                matrix[i][segedpixel+j] = colored
+    segedpixel += len(letterdata[x][2])-1
 
 # ----------------
 # -  BASH THING  -
@@ -102,14 +69,22 @@ for i in range(len(sys.argv)):
             )
 
 
-#matrix[0][0] = "\u001b[33m■\033[0m"
-#for i in range(rows):
-#    for j in range(0, columns, 12):
-#        matrix[i][j] = colored
+#V4(37)
+#V4(40)
+#segedpixel += 3
+#V4(25)
+#V4(5)
+#V4(24)
+#V4(34)
+#V4(25)
 
-V2()
-#V21()
-#print(matrix[1])
+seged = input("text: ")
+lista = [i.split(" ") for i in seged]
+
+for i in lista:
+    if lista[i] in letterdict:
+        print("van")
+
 for i in range(rows):
     for j in range(columns):
         print(matrix[i][j], end = " ")
