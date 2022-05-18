@@ -3,6 +3,8 @@
 # ---------------
 
 import sys #(sys.argv[x])
+import os #(os.system('clear'))
+import time
 
 # ---------------
 # -  VARIABLES  -
@@ -11,7 +13,8 @@ import sys #(sys.argv[x])
 rows = 21
 columns = 95
 pieces = 6
-matrix = [["\u001b[37m□\033[0m" for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
+base = "\u001b[37m□\033[0m"
+matrix = [[base for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
 options = [0,"","","","","",""]
 colored = "\u001b[33m■\033[0m"
 #colored = "■"
@@ -39,7 +42,7 @@ def V2():
                 matrix[i][segedpixel+j] = colored
     segedpixel = len(letterdata[0])
 
-#Bálint féle és természetesen működik
+#Bálint féle új, működik
 def V4(x: int):
     for i in range(len(letterdata[x])):
         global segedpixel
@@ -47,6 +50,84 @@ def V4(x: int):
             if letterdata[x][i][j] == "1":
                 matrix[i][segedpixel+j] = colored
     segedpixel += len(letterdata[x][2])-1
+
+# ---------------------
+# -  OTHER FUNCTIONS  -
+# ---------------------
+
+def clearDisplay():
+    for i in range(rows):
+        for j in range(columns):
+            if(matrix[i][j] != base):
+                matrix[i][j] = base
+
+def drawDisplay():
+    for i in range(rows):
+        for j in range(columns):
+            print(matrix[i][j], end = " ")
+        print("")
+
+def kijelzoTeszt():
+    os.system('clear')
+    for i in range(rows):
+        for j in range(columns):
+            matrix[i][j] = colored
+    drawDisplay()
+    time.sleep(1)
+    os.system('clear')
+    clearDisplay()
+    for i in range(rows):
+        for j in range(columns):
+            if i % 2 == 0:
+                if j % 2 == 0:
+                    matrix[i][j] = colored
+            else:
+                if j % 2 == 1:
+                    matrix[i][j] = colored
+    drawDisplay()
+    time.sleep(1)
+    os.system('clear')
+    clearDisplay()
+    for i in range(rows):
+        for j in range(columns):
+            if i % 2 == 0:
+                matrix[i][j] = colored
+    drawDisplay()
+    time.sleep(1)
+    os.system('clear')
+    clearDisplay()
+    for i in range(rows):
+        for j in range(columns):
+            if i % 2 == 1:
+                matrix[i][j] = colored
+    drawDisplay()
+    time.sleep(1)
+    os.system('clear')
+    clearDisplay()
+    for i in range(rows):
+        for j in range(columns):
+            if j % 2 == 0:
+                matrix[i][j] = colored
+    drawDisplay()
+    time.sleep(1)
+    os.system('clear')
+    clearDisplay()
+    for i in range(rows):
+        for j in range(columns):
+            if j % 2 == 1:
+                matrix[i][j] = colored
+    drawDisplay()
+    time.sleep(1)
+    os.system('clear')
+    clearDisplay()
+    #PROBLÉMÁS RÉSZ, NEM MŰKÖDIK RENDESEN
+#    for i in range(rows):
+#        for j in range(columns):
+#            matrix[i][j] = colored
+#            drawDisplay()
+#            time.sleep(0.1)
+#            os.system('clear')
+
 
 # ----------------
 # -  BASH THING  -
@@ -78,17 +159,14 @@ for i in range(len(sys.argv)):
 #V4(34)
 #V4(25)
 
-seged = input("text: ")
-lista = [i.split(" ") for i in seged]
+#seged = input("text: ")
+#lista = [i.split(" ") for i in seged]
 
-for i in lista:
-    if lista[i] in letterdict:
-        print("van")
+#for i in lista:
+#    if lista[i] in letterdict:
+#        print("van")
 
-for i in range(rows):
-    for j in range(columns):
-        print(matrix[i][j], end = " ")
-    print("")
+kijelzoTeszt()
 
 #print("asd")
 #print(matrix[5])
