@@ -23,11 +23,15 @@ letterdb = open("letters-1row.txt", "r").readlines()
 letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(letterdb)//rows)]
 letterdb2 = open("letters-2row.txt", "r").readlines()
 
-letterdict = {}
-
 for i in range(len(letterdb)//rows):
-    for j in range(rows):
-        letterdict[letterdata[i][0]] = letterdata[i]
+    letterdata[i][0] = letterdata[i][0].rstrip('\n')
+
+# NEM KELL, VAN JOBB
+#letterdict = {}
+
+#for i in range(len(letterdb)//rows):
+#    for j in range(rows):
+#        letterdict[letterdata[i][0]] = letterdata[i]
 
 # -------------
 # -  LETTERS  -
@@ -44,7 +48,7 @@ def V2():
 
 #Bálint féle új, működik
 def V4(x: int):
-    for i in range(len(letterdata[x])):
+    for i in range(1, len(letterdata[x])): # 1-gyel kezdődik, mert gyökér vagyok és a betű is beleszámít a sorokba
         global segedpixel
         for j in range(len(letterdata[x][i])):
             if letterdata[x][i][j] == "1":
@@ -143,7 +147,7 @@ for i in range(len(sys.argv)):
             "-r,    --row=STR           one-row mode: displays text in one row in the middle\n"
             "-ur,   --upperrow=STR      upper-row mode: displays text in the upper row of the display\n"
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
-           #"-in,   --invert            invert colors: the text becomes dark and the surrounding pixels become yellow\n"
+           #"-t,    --test              display test: tests the display by turning on or off different pixels\n"
             "-s,    --save=FILE         save the state of the display in a file [default: $SHOME/.cache/LEDdisplay]\n"
             "-l,    --load=FILE         load another display from a file [default: $SHOME/.cache/LEDdisplay]\n"
             "-h,    --help              displays this menu\n"
@@ -159,14 +163,23 @@ for i in range(len(sys.argv)):
 #V4(34)
 #V4(25)
 
-#seged = input("text: ")
-#lista = [i.split(" ") for i in seged]
+seged = input("text: ")
+lista = [i.split(" ") for i in seged] # majd ez lesz használva, de egyelőre nem működik és csak egy betűt tud kiírni
 
+print(seged)
+print(lista[0])
+
+for i in range(len(lista)):
+    for j in range(len(letterdb)//rows):
+#       print(letterdata[j][0])
+        if letterdata[j][0] == seged:
+            V4(j)
+drawDisplay()
 #for i in lista:
 #    if lista[i] in letterdict:
 #        print("van")
 
-kijelzoTeszt()
+#kijelzoTeszt()
 
 #print("asd")
 #print(matrix[5])
