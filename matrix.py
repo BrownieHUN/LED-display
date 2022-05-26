@@ -10,8 +10,8 @@ import time
 # -  VARIABLES  -
 # ---------------
 
-rows = 21
-columns = 95
+rows = 20
+columns = 105
 pieces = 6
 base = "\u001b[37m□\033[0m"
 matrix = [[base for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
@@ -26,12 +26,11 @@ letterdb2 = open("letters-2row.txt", "r").readlines()
 for i in range(len(letterdb)//rows):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
 
-# NEM KELL, VAN JOBB
-#letterdict = {}
+letterdict = {}
 
-#for i in range(len(letterdb)//rows):
-#    for j in range(rows):
-#        letterdict[letterdata[i][0]] = letterdata[i]
+for i in range(len(letterdb)//rows):
+    for j in range(rows):
+        letterdict[letterdata[i][0]] = letterdata[i]
 
 # -------------
 # -  LETTERS  -
@@ -54,6 +53,14 @@ def V4(x: int):
             if letterdata[x][i][j] == "1":
                 matrix[i][segedpixel+j] = colored
     segedpixel += len(letterdata[x][2])-1
+
+def V5(x: str):
+    for i in range(1, rows):
+        global segedpixel
+        for j in range(len(letterdict[x][i])):
+            if letterdict[x][i][j] == "1":
+                matrix[i][segedpixel+j] = colored
+    segedpixel += len(letterdict[x][i])-1
 
 # ---------------------
 # -  OTHER FUNCTIONS  -
@@ -124,13 +131,18 @@ def kijelzoTeszt():
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    #PROBLÉMÁS RÉSZ, NEM MŰKÖDIK RENDESEN
-#    for i in range(rows):
-#        for j in range(columns):
-#            matrix[i][j] = colored
-#            drawDisplay()
-#            time.sleep(0.1)
-#            os.system('clear')
+    for i in range(rows):
+        for j in range(columns):
+            matrix[i][j] = colored
+        drawDisplay()
+        time.sleep(0.5)
+        os.system('clear')
+    for i in range(rows):
+        for j in range(columns):
+            matrix[i][j] = base
+        drawDisplay()
+        time.sleep(0.5)
+        os.system('clear')
 
 
 # ----------------
@@ -148,39 +160,35 @@ for i in range(len(sys.argv)):
             "-ur,   --upperrow=STR      upper-row mode: displays text in the upper row of the display\n"
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
            #"-t,    --test              display test: tests the display by turning on or off different pixels\n"
-            "-s,    --save=FILE         save the state of the display in a file [default: $SHOME/.cache/LEDdisplay]\n"
-            "-l,    --load=FILE         load another display from a file [default: $SHOME/.cache/LEDdisplay]\n"
+            "-s,    --save=FILE         save the state of the display in a file [default: $HOME/.cache/LEDdisplay]\n"
+            "-l,    --load=FILE         load another display from a file [default: $HOME/.cache/LEDdisplay]\n"
             "-h,    --help              displays this menu\n"
             )
 
 
-#V4(37)
-#V4(40)
-#segedpixel += 3
-#V4(25)
-#V4(5)
-#V4(24)
-#V4(34)
-#V4(25)
-
 seged = input("text: ")
-lista = [i.split(" ") for i in seged] # majd ez lesz használva, de egyelőre nem működik és csak egy betűt tud kiírni
-
-print(seged)
-print(lista[0])
-
+lista = [i.split() for i in seged]
+# space karakter, csak így volt a legegyszerűbb megcsinálni 
 for i in range(len(lista)):
-    for j in range(len(letterdb)//rows):
-#       print(letterdata[j][0])
-        if letterdata[j][0] == seged:
-            V4(j)
+    if(len(lista[i]) == 0):
+        lista[i] = "$"
+print(lista)
+
+# kérlek ezt nézd meg és magyarázd el, hogy itt mi a keserves faszt csináltam véletlenül, amitől elkezdett működni
+# annyit tudok fixen, hogy ránéztem a mai infos alkotásodra és mondom hátha kihagyhatom a range(len...) részt belőle
+# de mondom ez magában kevés lesz, akkor kéne a segéd hozzá, ami így utólag ránézve semmit nem csinál, de mégis kell
+# így utólag nem tudom, hogy ez mégis miért működik, az én olvasatom szerint ez minden, csak nem egy működő 4 sor
+for i in lista:
+    seged = 0
+    V5(i[seged])
+    seged += 1
+
+# itt az előző, viszonyítás gyanánt
+#for i in range(len(lista)):
+#    V5(lista[i])    # ez az, ami soha nem működött, de ezt szerettem volna
+#    V5(seged)       # ez működött, de csak részben érte el a célját (egy karakter limit)
+
 drawDisplay()
-#for i in lista:
-#    if lista[i] in letterdict:
-#        print("van")
-
-#kijelzoTeszt()
-
 #print("asd")
 #print(matrix[5])
 
