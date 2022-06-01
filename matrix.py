@@ -12,16 +12,15 @@ import time
 
 rows = 20
 columns = 105
-pieces = 6
 base = "\u001b[37m□\033[0m"
 matrix = [[base for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
-options = [0,"","","","","",""]
 colored = "\u001b[33m■\033[0m"
 #colored = "■"
 segedpixel = 1
 letterdb = open("letters-1row.txt", "r").readlines()
 letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(letterdb)//rows)]
 letterdb2 = open("letters-2row.txt", "r").readlines()
+matrixtext = []
 
 for i in range(len(letterdb)//rows):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
@@ -77,6 +76,17 @@ def drawDisplay():
         for j in range(columns):
             print(matrix[i][j], end = " ")
         print("")
+
+def testForSpace():
+    for i in range(len(matrixtext)):
+        if(len(matrixtext[i]) == 0):
+            matrixtext[i] = "_"
+
+def textToMatrix():
+    for i in matrixtext:
+        seged = 0
+        V5(i[seged])
+        seged += 1
 
 def kijelzoTeszt():
     os.system('clear')
@@ -145,9 +155,9 @@ def kijelzoTeszt():
         os.system('clear')
 
 
-# ----------------
-# -  BASH THING  -
-# ----------------
+# ---------------
+# -  ARGUMENTS  -
+# ---------------
 
 for i in range(len(sys.argv)):
     if(sys.argv[i] == "-h" or sys.argv[i] == "--help"):
@@ -155,33 +165,53 @@ for i in range(len(sys.argv)):
             "Usage: matrix.py [OPTION]...\n\n"
             "Wannabe LED display. Displays text in a pre-defined font.\n\n"
             "Options:\n"
-            "-ln,   --linenumber=INT    line number: displays line number at the start of the display\n"
+            "-ln,   --linenumber=STR    line number: displays line number at the start of the display\n"
             "-r,    --row=STR           one-row mode: displays text in one row in the middle\n"
             "-ur,   --upperrow=STR      upper-row mode: displays text in the upper row of the display\n"
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
-           #"-t,    --test              display test: tests the display by turning on or off different pixels\n"
-            "-s,    --save=FILE         save the state of the display in a file [default: $HOME/.cache/LEDdisplay]\n"
+            "-t,    --test              display test: tests the display by turning on or off different pixels\n"
+            "-s,    --save=FILE         save the display in a file [default: $HOME/.cache/LEDdisplay]\n"
             "-l,    --load=FILE         load another display from a file [default: $HOME/.cache/LEDdisplay]\n"
-            "-h,    --help              displays this menu\n"
-            )
+            "-h,    --help              displays this menu\n\n"
+            "Special characters and their ids respectively:\n"
+            "  = _\n"
+            ". = .\n"
+            "! = !\n"
+            "? = ?\n"
+            "> = }\n"
+            "▶ = {\n"
+            "/ = /\n"
+            "( = [\n"
+            ") = ]\n"
+            "+ = +\n"
+            "- = -"
+        )
 
+    elif(sys.argv[i] == "-t" or sys.argv[i] == "--test"):
+        kijelzoTeszt()
 
-seged = input("text: ")
-lista = [i.split() for i in seged]
-# space karakter, csak így volt a legegyszerűbb megcsinálni 
-for i in range(len(lista)):
-    if(len(lista[i]) == 0):
-        lista[i] = "$"
-print(lista)
+    elif(sys.argv[i] == "-ln" or sys.argv[i] == "--linenumber"):
+        matrixtext = [i.split() for i in sys.argv[i+1]]
+        testForSpace()
+        textToMatrix()
+        segedpixel += 4
+
+    elif(sys.argv[i] == "-r" or sys.argv[i] == "--row"):
+        matrixtext = [i.split() for i in sys.argv[i+1]]
+        testForSpace()
+        textToMatrix()
+
+#seged = input("text: ")
+#lista = [i.split() for i in seged]
 
 # kérlek ezt nézd meg és magyarázd el, hogy itt mi a keserves faszt csináltam véletlenül, amitől elkezdett működni
 # annyit tudok fixen, hogy ránéztem a mai infos alkotásodra és mondom hátha kihagyhatom a range(len...) részt belőle
 # de mondom ez magában kevés lesz, akkor kéne a segéd hozzá, ami így utólag ránézve semmit nem csinál, de mégis kell
 # így utólag nem tudom, hogy ez mégis miért működik, az én olvasatom szerint ez minden, csak nem egy működő 4 sor
-for i in lista:
-    seged = 0
-    V5(i[seged])
-    seged += 1
+#for i in matrixtext:
+#    seged = 0
+#    V5(i[seged])
+#    seged += 1
 
 # itt az előző, viszonyítás gyanánt
 #for i in range(len(lista)):
