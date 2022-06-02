@@ -22,7 +22,7 @@ letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(let
 letterdb2 = open("letters-2row.txt", "r").readlines()
 letterdata2 = [[letterdb2[i+(j*10)] for i in range(10)] for j in range(len(letterdb2)//10)]
 matrixtext = []
-diff = 0
+diff = [0, 0, 0] #[0] - ur kezdet, [1] - ur vég, [2] - lr vég
 
 for i in range(len(letterdb)//rows):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
@@ -210,7 +210,7 @@ for i in range(len(sys.argv)):
     elif(sys.argv[i] == "-ln" or sys.argv[i] == "--linenumber"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         textToMatrix()
-        segedpixel += 4
+        segedpixel += 3
 
     elif(sys.argv[i] == "-r" or sys.argv[i] == "--row"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
@@ -219,14 +219,30 @@ for i in range(len(sys.argv)):
     elif(sys.argv[i] == "-ur"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         seged = 0
-        diff = segedpixel
+        diff[0] = segedpixel-1
+        # a mátrixba írós függvény azon része, ami megmondja, hogy milyen hosszú a szöveg
+        for i in matrixtext:
+            segedpixel += len(letterdict2[i[0]][j])-1
+        # ez itt a szöveg végéből a kezdetét kivonja, így megkapva a hosszűságát, majd azt a columns változóból
+        # kivonva és kettővel elosztva megkapható, hogy mennyi indent kell ahhoz, hogy relatíve középen legyen
+        seged2 = (columns-(segedpixel - diff[0]))//2
+        segedpixel = seged2 + diff[0]//2
         textToMatrix2()
+        diff[1] = segedpixel
 
     elif(sys.argv[i] == "-lr"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         seged = 9
-        segedpixel = diff
+        segedpixel = diff[0]
+        # a mátrixba írós függvény azon része, ami megmondja, hogy milyen hosszú a szöveg
+        for i in matrixtext:
+            segedpixel += len(letterdict2[i[0]][j])-1
+        # ez itt a szöveg végéből a kezdetét kivonja, így megkapva a hosszűságát, majd azt a columns változóból
+        # kivonva és kettővel elosztva megkapható, hogy mennyi indent kell ahhoz, hogy relatíve középen legyen
+        seged2 = (columns-(segedpixel - diff[0]))//2
+        segedpixel = seged2 + diff[0]//2
         textToMatrix2()
+        diff[2] = segedpixel
 
 #seged = input("text: ")
 #lista = [i.split() for i in seged]
@@ -242,6 +258,21 @@ for i in range(len(sys.argv)):
 #for i in range(len(lista)):
 #    V5(lista[i])    # ez az, ami soha nem működött, de ezt szerettem volna
 #    V5(seged)       # ez működött, de csak részben érte el a célját (egy karakter limit)
+
+#for i in range(0, rows):
+ #   if i <= 9:
+  #      for j in range(diff[0]-1, diff[1]):
+   #         if matrix[i][j] == colored:
+    #            matrix[i][j] = base
+     #       else:
+      #          matrix[i][j] = colored
+    #else:
+     #   for j in range(diff[0]-1, diff[2]):
+      #      if matrix[i][j] == colored:
+       #         matrix[i][j] = base
+        #    else:
+         #       matrix[i][j] = colored
+
 
 drawDisplay()
 #print("asd")
