@@ -20,13 +20,14 @@ segedpixel = 1
 letterdb = open("letters-1row.txt", "r").readlines()
 letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(letterdb)//rows)]
 letterdb2 = open("letters-2row.txt", "r").readlines()
-letterdata2 = [[letterdb2[i+(j*9)] for i in range(9)] for j in range(len(letterdb2)//9)]
+letterdata2 = [[letterdb2[i+(j*10)] for i in range(10)] for j in range(len(letterdb2)//10)]
 matrixtext = []
+diff = 0
 
 for i in range(len(letterdb)//rows):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
 
-for i in range(len(letterdb2)//9):
+for i in range(len(letterdb2)//10):
     letterdata2[i][0] = letterdata2[i][0].rstrip('\n')
 
 letterdict = {}
@@ -37,8 +38,8 @@ for i in range(len(letterdb)//rows):
 
 letterdict2 = {}
 
-for i in range(len(letterdb2)//9):
-    for j in range(rows):
+for i in range(len(letterdb2)//10):
+    for j in range(10):
         letterdict2[letterdata2[i][0][0]] = letterdata2[i]
 
 # -------------
@@ -72,7 +73,7 @@ def V5(x: str):
     segedpixel += len(letterdict[x][i])-1
 
 def V52(x: str):
-    for i in range(1, 9):
+    for i in range(1, 10):
         global segedpixel
         for j in range(len(letterdict2[x][i])):
             if letterdict2[x][i][j] == "1":
@@ -97,8 +98,7 @@ def drawDisplay():
 
 def textToMatrix():
     for i in matrixtext:
-        seged = 0
-        V5(i[seged])
+        V5(i[0])
 
 def textToMatrix2():
     for i in matrixtext:
@@ -219,13 +219,15 @@ for i in range(len(sys.argv)):
     elif(sys.argv[i] == "-ur"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         seged = 0
+        diff = segedpixel
         textToMatrix2()
 
     elif(sys.argv[i] == "-lr"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
-        seged = 8
-        segedpixel = 1
+        seged = 9
+        segedpixel = diff
         textToMatrix2()
+
 #seged = input("text: ")
 #lista = [i.split() for i in seged]
 
@@ -234,14 +236,13 @@ for i in range(len(sys.argv)):
 # de mondom ez magában kevés lesz, akkor kéne a segéd hozzá, ami így utólag ránézve semmit nem csinál, de mégis kell
 # így utólag nem tudom, hogy ez mégis miért működik, az én olvasatom szerint ez minden, csak nem egy működő 4 sor
 #for i in matrixtext:
-#    seged = 0
-#    V5(i[seged])
-#    seged += 1
+#    V5(i[0])
 
 # itt az előző, viszonyítás gyanánt
 #for i in range(len(lista)):
 #    V5(lista[i])    # ez az, ami soha nem működött, de ezt szerettem volna
 #    V5(seged)       # ez működött, de csak részben érte el a célját (egy karakter limit)
+
 drawDisplay()
 #print("asd")
 #print(matrix[5])
