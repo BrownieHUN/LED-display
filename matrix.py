@@ -11,7 +11,7 @@ import time
 # ---------------
 
 rows = 20
-columns = 105
+columns = 95
 base = "\u001b[37m□\033[0m"
 matrix = [[base for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
 colored = "\u001b[33m■\033[0m"
@@ -20,16 +20,26 @@ segedpixel = 1
 letterdb = open("letters-1row.txt", "r").readlines()
 letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(letterdb)//rows)]
 letterdb2 = open("letters-2row.txt", "r").readlines()
+letterdata2 = [[letterdb2[i+(j*9)] for i in range(9)] for j in range(len(letterdb2)//9)]
 matrixtext = []
 
 for i in range(len(letterdb)//rows):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
+
+for i in range(len(letterdb2)//9):
+    letterdata2[i][0] = letterdata2[i][0].rstrip('\n')
 
 letterdict = {}
 
 for i in range(len(letterdb)//rows):
     for j in range(rows):
         letterdict[letterdata[i][0]] = letterdata[i]
+
+letterdict2 = {}
+
+for i in range(len(letterdb2)//9):
+    for j in range(rows):
+        letterdict2[letterdata2[i][0][0]] = letterdata2[i]
 
 # -------------
 # -  LETTERS  -
@@ -61,6 +71,14 @@ def V5(x: str):
                 matrix[i][segedpixel+j] = colored
     segedpixel += len(letterdict[x][i])-1
 
+def V52(x: str):
+    for i in range(1, 9):
+        global segedpixel
+        for j in range(len(letterdict2[x][i])):
+            if letterdict2[x][i][j] == "1":
+                matrix[seged+i][segedpixel+j] = colored
+    segedpixel += len(letterdict2[x][i])-1
+
 # ---------------------
 # -  OTHER FUNCTIONS  -
 # ---------------------
@@ -77,16 +95,15 @@ def drawDisplay():
             print(matrix[i][j], end = " ")
         print("")
 
-def testForSpace():
-    for i in range(len(matrixtext)):
-        if(len(matrixtext[i]) == 0):
-            matrixtext[i] = "_"
-
 def textToMatrix():
     for i in matrixtext:
         seged = 0
         V5(i[seged])
-        seged += 1
+
+def textToMatrix2():
+    for i in matrixtext:
+        seged = 0
+        V52(i[seged])
 
 def kijelzoTeszt():
     os.system('clear')
@@ -192,15 +209,23 @@ for i in range(len(sys.argv)):
 
     elif(sys.argv[i] == "-ln" or sys.argv[i] == "--linenumber"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
-        testForSpace()
         textToMatrix()
         segedpixel += 4
 
     elif(sys.argv[i] == "-r" or sys.argv[i] == "--row"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
-        testForSpace()
         textToMatrix()
 
+    elif(sys.argv[i] == "-ur"):
+        matrixtext = [i.split() for i in sys.argv[i+1]]
+        seged = 0
+        textToMatrix2()
+
+    elif(sys.argv[i] == "-lr"):
+        matrixtext = [i.split() for i in sys.argv[i+1]]
+        seged = 8
+        segedpixel = 1
+        textToMatrix2()
 #seged = input("text: ")
 #lista = [i.split() for i in seged]
 
@@ -217,7 +242,6 @@ for i in range(len(sys.argv)):
 #for i in range(len(lista)):
 #    V5(lista[i])    # ez az, ami soha nem működött, de ezt szerettem volna
 #    V5(seged)       # ez működött, de csak részben érte el a célját (egy karakter limit)
-
 drawDisplay()
 #print("asd")
 #print(matrix[5])
