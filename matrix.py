@@ -10,21 +10,21 @@ import time
 # -  VARIABLES  -
 # ---------------
 
-rows = 20
-columns = 95
-base = "\u001b[37m□\033[0m"
-matrix = [[base for i in range(columns)] for j in range(rows)] #matrix[sor][oszlop]
-colored = "\u001b[33m■\033[0m"
+ROWS = 20
+COLUMNS = 95
+BASE = "\u001b[37m□\033[0m"
+matrix = [[BASE for i in range(COLUMNS)] for j in range(ROWS)] #matrix[sor][oszlop]
+COLORED = "\u001b[33m■\033[0m"
 #colored = "■"
 segedpixel = 1
 letterdb = open("letters-1row.txt", "r").readlines()
-letterdata = [[letterdb[i+(j*rows)] for i in range(rows)] for j in range(len(letterdb)//rows)]
+letterdata = [[letterdb[i+(j*ROWS)] for i in range(ROWS)] for j in range(len(letterdb)//ROWS)]
 letterdb2 = open("letters-2row.txt", "r").readlines()
 letterdata2 = [[letterdb2[i+(j*10)] for i in range(10)] for j in range(len(letterdb2)//10)]
 matrixtext = []
 diff = [0, 0, 0] #[0] - ur kezdet, [1] - ur vég, [2] - lr vég
 
-for i in range(len(letterdb)//rows):
+for i in range(len(letterdb)//ROWS):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
 
 for i in range(len(letterdb2)//10):
@@ -32,8 +32,8 @@ for i in range(len(letterdb2)//10):
 
 letterdict = {}
 
-for i in range(len(letterdb)//rows):
-    for j in range(rows):
+for i in range(len(letterdb)//ROWS):
+    for j in range(ROWS):
         letterdict[letterdata[i][0]] = letterdata[i]
 
 letterdict2 = {}
@@ -65,11 +65,11 @@ def V4(x: int):
     segedpixel += len(letterdata[x][2])-1
 
 def V5(x: str):
-    for i in range(1, rows):
+    for i in range(1, ROWS):
         global segedpixel
         for j in range(len(letterdict[x][i])):
             if letterdict[x][i][j] == "1":
-                matrix[i][segedpixel+j] = colored
+                matrix[i][segedpixel+j] = COLORED
     segedpixel += len(letterdict[x][i])-1
 
 def V52(x: str):
@@ -77,7 +77,7 @@ def V52(x: str):
         global segedpixel
         for j in range(len(letterdict2[x][i])):
             if letterdict2[x][i][j] == "1":
-                matrix[seged+i][segedpixel+j] = colored
+                matrix[seged+i][segedpixel+j] = COLORED
     segedpixel += len(letterdict2[x][i])-1
 
 # ---------------------
@@ -85,14 +85,14 @@ def V52(x: str):
 # ---------------------
 
 def clearDisplay():
-    for i in range(rows):
-        for j in range(columns):
-            if(matrix[i][j] != base):
-                matrix[i][j] = base
+    for i in range(ROWS):
+        for j in range(COLUMNS):
+            if(matrix[i][j] != BASE):
+                matrix[i][j] = BASE
 
 def drawDisplay():
-    for i in range(rows):
-        for j in range(columns):
+    for i in range(ROWS):
+        for j in range(COLUMNS):
             print(matrix[i][j], end = " ")
         print("")
 
@@ -107,66 +107,66 @@ def textToMatrix2():
 
 def kijelzoTeszt():
     os.system('clear')
-    for i in range(rows):
-        for j in range(columns):
-            matrix[i][j] = colored
+    for i in range(ROWS):
+        for j in range(COLUMNS):
+            matrix[i][j] = COLORED
     drawDisplay()
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    for i in range(rows):
-        for j in range(columns):
+    for i in range(ROWS):
+        for j in range(COLUMNS):
             if i % 2 == 0:
                 if j % 2 == 0:
-                    matrix[i][j] = colored
+                    matrix[i][j] = COLORED
             else:
                 if j % 2 == 1:
-                    matrix[i][j] = colored
+                    matrix[i][j] = COLORED
     drawDisplay()
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    for i in range(rows):
-        for j in range(columns):
+    for i in range(ROWS):
+        for j in range(COLUMNS):
             if i % 2 == 0:
-                matrix[i][j] = colored
+                matrix[i][j] = COLORED
     drawDisplay()
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    for i in range(rows):
-        for j in range(columns):
+    for i in range(ROWS):
+        for j in range(COLUMNS):
             if i % 2 == 1:
-                matrix[i][j] = colored
+                matrix[i][j] = COLORED
     drawDisplay()
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    for i in range(rows):
-        for j in range(columns):
+    for i in range(ROWS):
+        for j in range(COLUMNS):
             if j % 2 == 0:
-                matrix[i][j] = colored
+                matrix[i][j] = COLORED
     drawDisplay()
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    for i in range(rows):
-        for j in range(columns):
+    for i in range(ROWS):
+        for j in range(COLUMNS):
             if j % 2 == 1:
-                matrix[i][j] = colored
+                matrix[i][j] = COLORED
     drawDisplay()
     time.sleep(1)
     os.system('clear')
     clearDisplay()
-    for i in range(rows):
-        for j in range(columns):
-            matrix[i][j] = colored
+    for i in range(ROWS):
+        for j in range(COLUMNS):
+            matrix[i][j] = COLORED
         drawDisplay()
         time.sleep(0.5)
         os.system('clear')
-    for i in range(rows):
-        for j in range(columns):
-            matrix[i][j] = base
+    for i in range(ROWS):
+        for j in range(COLUMNS):
+            matrix[i][j] = BASE
         drawDisplay()
         time.sleep(0.5)
         os.system('clear')
@@ -216,7 +216,7 @@ for i in range(len(sys.argv)):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         textToMatrix()
 
-    elif(sys.argv[i] == "-ur"):
+    elif(sys.argv[i] == "-ur" or sys.argv[i] == "upperrow"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         seged = 0
         diff[0] = segedpixel-1
@@ -225,12 +225,12 @@ for i in range(len(sys.argv)):
             segedpixel += len(letterdict2[i[0]][j])-1
         # ez itt a szöveg végéből a kezdetét kivonja, így megkapva a hosszűságát, majd azt a columns változóból
         # kivonva és kettővel elosztva megkapható, hogy mennyi indent kell ahhoz, hogy relatíve középen legyen
-        seged2 = (columns-(segedpixel - diff[0]))//2
+        seged2 = (COLUMNS-(segedpixel - diff[0]))//2
         segedpixel = seged2 + diff[0]//2
         textToMatrix2()
         diff[1] = segedpixel
 
-    elif(sys.argv[i] == "-lr"):
+    elif(sys.argv[i] == "-lr" or sys.argv[i] == "lowerrow"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
         seged = 9
         segedpixel = diff[0]
@@ -239,7 +239,7 @@ for i in range(len(sys.argv)):
             segedpixel += len(letterdict2[i[0]][j])-1
         # ez itt a szöveg végéből a kezdetét kivonja, így megkapva a hosszűságát, majd azt a columns változóból
         # kivonva és kettővel elosztva megkapható, hogy mennyi indent kell ahhoz, hogy relatíve középen legyen
-        seged2 = (columns-(segedpixel - diff[0]))//2
+        seged2 = (COLUMNS-(segedpixel - diff[0]))//2
         segedpixel = seged2 + diff[0]//2
         textToMatrix2()
         diff[2] = segedpixel
