@@ -21,14 +21,20 @@ letterdb = open("letters-1row.txt", "r").readlines()
 letterdata = [[letterdb[i+(j*ROWS)] for i in range(ROWS)] for j in range(len(letterdb)//ROWS)]
 letterdb2 = open("letters-2row.txt", "r").readlines()
 letterdata2 = [[letterdb2[i+(j*10)] for i in range(10)] for j in range(len(letterdb2)//10)]
+specialdb = open("special-1row.txt", "r").readlines()
+specialdata = [[specialdb[i+(j*ROWS)] for i in range(ROWS)] for j in range(len(specialdb)//ROWS)]
+
 matrixtext = []
-diff = [0, 0, 0] #[0] - ur/lr kezdet, [1] - ur vég, [2] - lr vég
+diff = [0, 0, 0, 0] #[0] - ur/lr kezdet, [1] - ur vég, [2] - lr vég, [3] r vég
 
 for i in range(len(letterdb)//ROWS):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
 
 for i in range(len(letterdb2)//10):
     letterdata2[i][0] = letterdata2[i][0].rstrip('\n')
+
+for i in range(len(specialdb)//ROWS):
+    specialdata[i][0] = specialdata[i][0].rstrip('\n')
 
 letterdict = {}
 
@@ -41,6 +47,12 @@ letterdict2 = {}
 for i in range(len(letterdb2)//10):
     for j in range(10):
         letterdict2[letterdata2[i][0][0]] = letterdata2[i]
+
+specialdict = {}
+
+for i in range(len(specialdb)//ROWS):
+    for j in range(ROWS):
+        specialdict[specialdata[i][0]] = specialdata[i]
 
 # -------------
 # -  LETTERS  -
@@ -65,8 +77,14 @@ def V4(x: int):
     segedpixel += len(letterdata[x][2])-1
 
 # jelenlegi, egybecsinálva a 2 dictet
-def V5(x: str, ul: int, ld): # x = adott betű, ul = melyik sorban kezdődjön a kiírás, ld = letterdata1/2-ből olvasson
-    nld = (letterdict2 if ld == 0 else letterdict)
+def V5(x: str, ul: int, ld): # x = adott betű, ul = melyik sorban kezdődjön a kiírás, ld = egysoros-e (2 = special)
+    if ld == 0:
+        nld = letterdict2
+    elif ld == 1:
+        nld = letterdict
+    else:
+        nld = specialdict
+
     for i in range(1, len(nld[x])):
         global segedpixel
         for j in range(len(nld[x][i])):
@@ -90,15 +108,18 @@ def drawDisplay():
             print(matrix[i][j], end = " ")
         print("")
 
-def textToMatrix(ul: int, ld: int): #ul = u.a., mint a V5-nél lévő ul; r2 = 2 soros-e a kiírás
+def textToMatrix(ul: int, ld: int): #ul = u.a., mint a V5-nél lévő ul; ld = 1 soros-e a kiírás (2 = special)
     for i in matrixtext:
         V5(i[0], ul, ld)
 
-def centerText(rn): # rn = rownr., 1. vagy 2.
+def centerText(rn): # rn = rownr., 1. vagy 2.; ha 3, akkor egy soros
     global segedpixel
     # a mátrixba írós függvény azon része, ami megmondja, hogy milyen hosszú a szöveg
     for i in matrixtext:
-        segedpixel += len(letterdict2[i[0]][1])-1
+        if rn != 3:
+            segedpixel += len(letterdict2[i[0]][1])-1
+        else:
+            segedpixel += len(letterdict[i[0]][1])-1
     diff[rn] = segedpixel
     # ez itt a szöveg végéből a kezdetét kivonja, így megkapva a hosszúságát, majd azt a columns változóból
     # kivonva és kettővel elosztva, majd hozzáadva a szöveg kezdetét megkapható, 
@@ -171,12 +192,13 @@ for i in range(len(sys.argv)):
             "Wannabe LED display. Displays text in a pre-defined font.\n\n"
             "Options:\n"
             "-ln,   --linenumber=STR    line number: displays line number at the start of the display\n"
+            "-lns,  --specialln=STR     replaces the line number with a custom set of pixels from 'special-1row.txt'\n"
             "-r,    --row=STR           one-row mode: displays text in one row in the middle\n"
             "-ur,   --upperrow=STR      upper-row mode: displays text in the upper row of the display\n"
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
             "-t,    --test              display test: tests the display by turning on or off different pixels\n"
-            "-s,    --save=FILE         save the display in a file [default: $HOME/.cache/LEDdisplay]\n"
-            "-l,    --load=FILE         load another display from a file [default: $HOME/.cache/LEDdisplay]\n"
+            "-s,    --save=FILE         save the display in a file in the folder from which you run this script\n"
+            "-l,    --load=FILE         load another display from a file in the folder from which you run this script\n"
             "-c,    --center            centers the text (doesn't include line number)\n"
             "-h,    --help              displays this menu\n\n"
             "Special characters and their ids respectively:\n"
@@ -201,8 +223,17 @@ for i in range(len(sys.argv)):
         textToMatrix(0, 1)
         segedpixel += 3
 
+    elif(sys.argv[i] == "-lns" or sys.argv[i] == "--specialln"):
+        matrixtext = [i.split() for i in sys.argv[i+1]]
+        textToMatrix(0,2)
+        segedpixel += 3
+
     elif(sys.argv[i] == "-r" or sys.argv[i] == "--row"):
         matrixtext = [i.split() for i in sys.argv[i+1]]
+        diff[0] = segedpixel
+        for j in sys.argv:
+            if j == "-c":
+                centerText(3)
         textToMatrix(0, 1)
 
     elif(sys.argv[i] == "-ur" or sys.argv[i] == "--upperrow"):
@@ -221,12 +252,29 @@ for i in range(len(sys.argv)):
                 centerText(2)
         textToMatrix(9, 0)
 
+    elif(sys.argv[i] == "-s"):
+        output = open(f"{sys.argv[i+1]}", "w")
+        for i in range(ROWS):
+            for j in range(COLUMNS):
+                print(matrix[i][j])
+                output.write("1" if "■" in matrix[i][j] else "0")
+            output.write("\n")
+
+    elif(sys.argv[i] == "-l"):
+        loadtext = open(f"{sys.argv[i+1]}", "r").readlines()
+        for j in range(len(loadtext)):
+            for k in range(len(loadtext[5])):
+                if loadtext[j][k] == "1":
+                    matrix[j][k] = COLORED
+
+drawDisplay()
+
 #seged = input("text: ")
 #lista = [i.split() for i in seged]
 
 # kérlek ezt nézd meg és magyarázd el, hogy itt mi a keserves faszt csináltam véletlenül, amitől elkezdett működni
 # annyit tudok fixen, hogy ránéztem a mai infos alkotásodra és mondom hátha kihagyhatom a range(len...) részt belőle
-# de mondom ez magában kevés lesz, akkor kéne a segéd hozzá, ami így utólag ránézve semmit nem csinál, de mégis kell
+# de mondom ez magában kevés lesz, akkor kéne a segéd hozzá, ami így utólag ránézve semmit nem csinál
 # így utólag nem tudom, hogy ez mégis miért működik, az én olvasatom szerint ez minden, csak nem egy működő 2 sor
 #for i in matrixtext:
 #    V5(i[0])
@@ -252,15 +300,4 @@ for i in range(len(sys.argv)):
          #       matrix[i][j] = colored
 
 
-drawDisplay()
-#print("asd")
-#print(matrix[5])
-
-#seged = input("text: ")
-
-#lista = [i.split(" ") for i in seged]
-
 # ■
-#□ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ 
-#□ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □
-#□ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □ □
