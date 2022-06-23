@@ -198,8 +198,7 @@ for i in range(len(sys.argv)):
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
             "-t,    --test              display test: tests the display by turning on or off different pixels\n"
             "-s,    --save=FILE         save the display in a file in the folder from which you run this script\n"
-            "-l,    --load=
-   aeec51a..40f9f17  main -> mainFILE         load another display from a file in the folder from which you run this script\n"
+            "-l,    --load=FILE         load another display from a file in the folder from which you run this script\n"
             "-c,    --center            centers the text (doesn't include line number)\n"
             "-h,    --help              displays this menu\n\n"
             "Special characters and their ids respectively:\n"
