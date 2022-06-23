@@ -17,11 +17,11 @@ matrix = [[BASE for i in range(COLUMNS)] for j in range(ROWS)] #matrix[sor][oszl
 COLORED = ("\u001b[33m■\033[0m" if os.name != "nt" else "■")
 #colored = "■"
 segedpixel = 1
-letterdb = open("letters-1row.txt", "r").readlines()
+letterdb = open("letters-1row.txt", "r", encoding="utf8").readlines()
 letterdata = [[letterdb[i+(j*ROWS)] for i in range(ROWS)] for j in range(len(letterdb)//ROWS)]
-letterdb2 = open("letters-2row.txt", "r").readlines()
+letterdb2 = open("letters-2row.txt", "r", encoding="utf8").readlines()
 letterdata2 = [[letterdb2[i+(j*10)] for i in range(10)] for j in range(len(letterdb2)//10)]
-specialdb = open("special-1row.txt", "r").readlines()
+specialdb = open("special-1row.txt", "r", encoding="utf8").readlines()
 specialdata = [[specialdb[i+(j*ROWS)] for i in range(ROWS)] for j in range(len(specialdb)//ROWS)]
 
 matrixtext = []
@@ -198,7 +198,8 @@ for i in range(len(sys.argv)):
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
             "-t,    --test              display test: tests the display by turning on or off different pixels\n"
             "-s,    --save=FILE         save the display in a file in the folder from which you run this script\n"
-            "-l,    --load=FILE         load another display from a file in the folder from which you run this script\n"
+            "-l,    --load=
+   aeec51a..40f9f17  main -> mainFILE         load another display from a file in the folder from which you run this script\n"
             "-c,    --center            centers the text (doesn't include line number)\n"
             "-h,    --help              displays this menu\n\n"
             "Special characters and their ids respectively:\n"
@@ -253,7 +254,7 @@ for i in range(len(sys.argv)):
         textToMatrix(9, 0)
 
     elif(sys.argv[i] == "-s"):
-        output = open(f"{sys.argv[i+1]}", "w")
+        output = open(f"{sys.argv[i+1]}", "w", encoding="utf8")
         for i in range(ROWS):
             for j in range(COLUMNS):
                 print(matrix[i][j])
@@ -261,7 +262,7 @@ for i in range(len(sys.argv)):
             output.write("\n")
 
     elif(sys.argv[i] == "-l"):
-        loadtext = open(f"{sys.argv[i+1]}", "r").readlines()
+        loadtext = open(f"{sys.argv[i+1]}", "r", encoding="utf8").readlines()
         for j in range(len(loadtext)):
             for k in range(len(loadtext[5])):
                 if loadtext[j][k] == "1":
