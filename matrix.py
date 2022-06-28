@@ -125,6 +125,7 @@ def centerText(rn): # rn = rownr., 1. vagy 2.; ha 3, akkor egy soros
     # kivonva és kettővel elosztva, majd hozzáadva a szöveg kezdetét megkapható, 
     # hogy mennyi indent kell ahhoz, hogy relatíve középen legyen
     segedpixel = (COLUMNS - (diff[rn] - diff[0]) + diff[0])//2
+    diff[rn] = segedpixel
 
 def tesztDraw():
     drawDisplay()
@@ -194,8 +195,11 @@ for i in range(len(sys.argv)):
             "-ln,   --linenumber=STR    line number: displays line number at the start of the display\n"
             "-lns,  --specialln=STR     replaces the line number with a custom set of pixels from 'special-1row.txt'\n"
             "-r,    --row=STR           one-row mode: displays text in one row in the middle\n"
+            "-ri,   --rowinvert         inverts the displayed text in the main row"
             "-ur,   --upperrow=STR      upper-row mode: displays text in the upper row of the display\n"
+            "-uri,  --upperinvert       inverts the displayed text in the upper row\n"
             "-lr,   --lowerrow=STR      lower-row mode: displays text in the lower row of the display\n"
+            "-lri,  --lowerinvert       inverts the displayed text in the lower row"
             "-t,    --test              display test: tests the display by turning on or off different pixels\n"
             "-s,    --save=FILE         save the display in a file in the folder from which you run this script\n"
             "-l,    --load=FILE         load another display from a file in the folder from which you run this script\n"
@@ -236,6 +240,14 @@ for i in range(len(sys.argv)):
                 centerText(3)
         textToMatrix(0, 1)
 
+    elif(sys.argv[i] == "-ri"):
+        for j in range(20):
+            for k in range(diff[3]-2, segedpixel+1):
+                if matrix[j][k] == COLORED:
+                    matrix[j][k] = BASE
+                else:
+                    matrix[j][k] = COLORED
+
     elif(sys.argv[i] == "-ur" or sys.argv[i] == "--upperrow"):
         matrixtext = sys.argv[i+1]
         diff[0] = segedpixel
@@ -244,6 +256,14 @@ for i in range(len(sys.argv)):
                 centerText(1)
         textToMatrix(0, 0)
 
+    elif(sys.argv[i] == "-uri"):
+        for j in range(10):
+            for k in range(diff[1]-2, segedpixel+1):
+                if matrix[j][k] == COLORED:
+                    matrix[j][k] = BASE
+                else:
+                    matrix[j][k] = COLORED
+
     elif(sys.argv[i] == "-lr" or sys.argv[i] == "--lowerrow"):
         matrixtext = sys.argv[i+1]
         segedpixel = diff[0]
@@ -251,6 +271,14 @@ for i in range(len(sys.argv)):
             if j == "-c":
                 centerText(2)
         textToMatrix(9, 0)
+
+    elif(sys.argv[i] == "-lri"):
+        for j in range(10, 20):
+            for k in range(diff[2]-1, segedpixel+1):
+                if matrix[j][k] == COLORED:
+                    matrix[j][k] = BASE
+                else:
+                    matrix[j][k] = COLORED
 
     elif(sys.argv[i] == "-s"):
         output = open(f"{sys.argv[i+1]}", "w", encoding="utf8")
