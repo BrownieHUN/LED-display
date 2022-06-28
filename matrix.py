@@ -25,7 +25,7 @@ specialdb = open("special-1row.txt", "r", encoding="utf8").readlines()
 specialdata = [[specialdb[i+(j*ROWS)] for i in range(ROWS)] for j in range(len(specialdb)//ROWS)]
 
 matrixtext = []
-diff = [0, 0, 0, 0] #[0] - ur/lr kezdet, [1] - ur vég, [2] - lr vég, [3] r vég
+diff = [0, 0, 0, 0, 0] #[0] - ur/lr kezdet, [1] - ur vég, [2] - lr vég, [3] r vég, [4] lr kezdet
 
 for i in range(len(letterdb)//ROWS):
     letterdata[i][0] = letterdata[i][0].rstrip('\n')
@@ -126,6 +126,7 @@ def centerText(rn): # rn = rownr., 1. vagy 2.; ha 3, akkor egy soros
     # hogy mennyi indent kell ahhoz, hogy relatíve középen legyen
     segedpixel = (COLUMNS - (diff[rn] - diff[0]) + diff[0])//2
     diff[rn] = segedpixel
+    diff[0] = segedpixel
 
 def tesztDraw():
     drawDisplay()
@@ -251,6 +252,8 @@ for i in range(len(sys.argv)):
     elif(sys.argv[i] == "-ur" or sys.argv[i] == "--upperrow"):
         matrixtext = sys.argv[i+1]
         diff[0] = segedpixel
+        diff[4] = diff[0]
+        diff[1] = diff[0]
         for j in sys.argv:
             if j == "-c":
                 centerText(1)
@@ -266,7 +269,9 @@ for i in range(len(sys.argv)):
 
     elif(sys.argv[i] == "-lr" or sys.argv[i] == "--lowerrow"):
         matrixtext = sys.argv[i+1]
-        segedpixel = diff[0]
+        segedpixel = diff[4]
+        diff[0] = diff[4]
+        diff[2] = diff[4]
         for j in sys.argv:
             if j == "-c":
                 centerText(2)
@@ -274,7 +279,7 @@ for i in range(len(sys.argv)):
 
     elif(sys.argv[i] == "-lri"):
         for j in range(10, 20):
-            for k in range(diff[2]-1, segedpixel+1):
+            for k in range(diff[2]-2, segedpixel+1):
                 if matrix[j][k] == COLORED:
                     matrix[j][k] = BASE
                 else:
